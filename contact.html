@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio - Contact</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">Portfolio.</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">About</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="skill.html">Skills</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Contact Section -->
+            <section class="section" id="contact" style="min-height: calc(100vh - 120px);">
+                <h2 class="section-title">Get In <span>Touch</span></h2>
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <p>I'm currently looking for new opportunities. Whether you have a question or just want to say
+                            hi, I'll try my best to get back to you!</p>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>kasunmalshanperera@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Colombo, Sri Lanka</span>
+                        </div>
+                    </div>
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="name" placeholder="Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" placeholder="Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn primary-btn" id="submitBtn">Send Message</button>
+                    </form>
+                    <!-- Form Status Message -->
+                    <div id="formStatus" style="margin-top: 15px; font-weight: 600; display: none;"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            const submitBtn = document.getElementById('submitBtn');
+            const statusDiv = document.getElementById('formStatus');
+
+            // Get form values
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
+            };
+
+            // UI feedback while sending
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            statusDiv.style.display = 'none';
+
+            try {
+                // Send data to backend API
+                const response = await fetch('http://localhost:3000/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                // Show result message
+                statusDiv.style.display = 'block';
+                if (response.ok) {
+                    statusDiv.textContent = '✅ ' + result.message;
+                    statusDiv.style.color = '#3ddc84'; // Success green
+                    document.getElementById('contactForm').reset(); // Clear form
+                } else {
+                    statusDiv.textContent = '❌ ' + result.message;
+                    statusDiv.style.color = '#ff6b6b'; // Error red
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = '❌ Failed to connect to the server. Is it running?';
+                statusDiv.style.color = '#ff6b6b';
+            } finally {
+                // Reset button
+                submitBtn.textContent = 'Send Message';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

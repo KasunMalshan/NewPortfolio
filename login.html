@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Login - Messages</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .message-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .message-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .message-card h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: var(--accent-light, #3ddc84);
+            font-size: 1.2rem;
+        }
+
+        .message-card .email {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.6);
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .message-card .date {
+            font-size: 0.8em;
+            float: right;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            margin-bottom: 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #3ddc84;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">Portfolio.</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">About</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="skill.html">Skills</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="section"
+                style="min-height: calc(100vh - 120px); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px;">
+                <h2 class="section-title">Admin <span>Login</span></h2>
+
+                <div id="loginSection"
+                    style="max-width: 400px; width: 100%; background: rgba(255,255,255,0.02); padding: 40px 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
+                    <i class="fas fa-lock" style="font-size: 3rem; color: #3ddc84; margin-bottom: 20px;"></i>
+                    <p style="margin-bottom: 25px; color: rgba(255,255,255,0.7);">Enter Admin Password</p>
+                    <div class="form-group">
+                        <input type="password" id="adminPassword" placeholder="Secret Password">
+                    </div>
+                    <button onclick="loginAndFetchMessages()" class="btn primary-btn"
+                        style="width: 100%; justify-content: center;" id="loginBtn">Login</button>
+                    <p id="loginError" style="color: #ff6b6b; margin-top: 15px; display: none; font-weight: 600;">
+                        Incorrect password!</p>
+                </div>
+
+                <div id="dashboardSection" style="display: none; max-width: 800px; width: 100%;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h3 style="margin: 0; font-size: 1.5rem; color: white;">📥 Received Messages</h3>
+                        <button onclick="location.reload()" class="btn"
+                            style="padding: 8px 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                    <div id="messagesContainer">
+                        <!-- Messages render here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        async function loginAndFetchMessages() {
+            const password = document.getElementById('adminPassword').value;
+            const errorText = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!password) {
+                errorText.style.display = 'block';
+                errorText.textContent = 'Please enter a password';
+                return;
+            }
+
+            loginBtn.textContent = 'Verifying...';
+            errorText.style.display = 'none';
+
+            try {
+                // Send GET request with the password heavily protected in the headers
+                const response = await fetch('http://localhost:3000/api/contact', {
+                    method: 'GET',
+                    headers: { 'Authorization': password }
+                });
+
+                if (!response.ok) {
+                    errorText.style.display = 'block';
+                    errorText.textContent = response.status === 401 ? '❌ Incorrect password!' : 'Server error fetching data';
+                    loginBtn.textContent = 'Unlock Messages';
+                    return;
+                }
+
+                // If password was correct, parse the messages
+                const messages = await response.json();
+
+                // Hide login, show dashboard
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.querySelector('.section-title').innerHTML = 'Admin <span>Dashboard</span>';
+
+                const container = document.getElementById('messagesContainer');
+                container.innerHTML = '';
+
+                if (messages.length === 0) {
+                    container.innerHTML = '<div style="padding: 40px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fas fa-inbox" style="font-size: 2.5rem; color: rgba(255,255,255,0.2); margin-bottom: 15px;"></i><p>No messages received yet.</p></div>';
+                    return;
+                }
+
+                // Render each message as a beautiful card
+                messages.forEach(msg => {
+                    const date = new Date(msg.date).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    const card = document.createElement('div');
+                    card.className = 'message-card';
+                    card.innerHTML = `
+                        <span class="date">${date}</span>
+                        <h4>${msg.name}</h4>
+                        <span class="email"><i class="fas fa-envelope" style="margin-right: 8px;"></i>${msg.email}</span>
+                        <p style="background: rgba(0,0,0,0.3); padding: 18px; border-radius: 8px; margin: 0; line-height: 1.6; border: 1px solid rgba(255,255,255,0.02); color: rgba(255,255,255,0.85);">${msg.message}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                errorText.style.display = 'block';
+                errorText.textContent = 'Network error. Ensure your terminal server is running.';
+                loginBtn.textContent = 'Unlock Messages';
+            }
+        }
+
+        // Allow pressing Enter to submit password
+        document.getElementById('adminPassword').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                loginAndFetchMessages();
+            }
+        });
+    </script>
+</body>
+
+</html>

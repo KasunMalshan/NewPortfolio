@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">Portfolio.</div>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">About</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="skill.html">Skills</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="login.html" style="color: #3ddc84;"><i class="fas fa-lock"
+                                style="margin-right: 5px;"></i>Admin</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero" id="about">
+                <div class="hero-content">
+                    <span class="greeting">Welcome to my universe</span><br>
+                    <span class="sliit">Undergradute at SLIIT</span>
+                    <h1>I'm <span
+                            style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Kasun
+                            Malshan Perera</span>
+                    </h1>
+                    <h2 class="typing-text">Full Stack Developer</h2>
+                    <p>An IT undergraduate in SLIIT who’s enthusiastic about new IT trends and technologies with
+                        exceptional designing skills and Videography skills. Used to create videos as a content creator
+                        and currently enhancing UI/UX skills. Passionate to be a multi-talented IT professional.
+                        Motivated by learning new skills in IT field.</p>
+                    <div class="cta-buttons">
+                        <a href="work.html" class="btn primary-btn">Explore Projects <i class="fas fa-arrow-right"
+                                style="margin-left: 8px;"></i></a>
+                        <a href="contact.html" class="btn secondary-btn">Let's Talk</a>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-wrapper">
+                        <!-- We will copy the generated image to this path -->
+                        <img src="profile_picture.jpg" alt="Profile Picture" id="profile-img">
+
+                        <div class="floating-badge badge-1"><i class="fab fa-react"></i></div>
+                        <div class="floating-badge badge-2"><i class="fab fa-js"></i></div>
+                        <div class="floating-badge badge-3"><i class="fab fa-python"></i></div>
+                        <div class="floating-badge badge-4"><i class="fab fa-node-js"></i></div>
+                        <div class="floating-badge badge-5"><i class="fab fa-html5"></i></div>
+                        <div class="floating-badge badge-6"><i class="fab fa-java"></i></div>
+                        <div class="floating-badge badge-7"><i class="fab fa-android"></i></div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Simple typing effect script
+        const texts = ["Web Developer", "UX/UI Designer", "Creative Problem Solver"];
+        let count = 0;
+        let index = 0;
+        let currentText = "";
+        let letter = "";
+        const typingElement = document.querySelector('.typing-text');
+
+        function type() {
+            if (count === texts.length) {
+                count = 0;
+            }
+            currentText = texts[count];
+            letter = currentText.slice(0, ++index);
+
+            typingElement.textContent = letter;
+            if (letter.length === currentText.length) {
+                setTimeout(() => {
+                    index = 0;
+                    count++;
+                    type();
+                }, 2000); // pause at the end of word
+            } else {
+                setTimeout(type, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(type, 1000);
+        });
+    </script>
+</body>
+
+</html>
