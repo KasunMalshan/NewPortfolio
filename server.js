@@ -21,20 +21,20 @@ const Contact = mongoose.model('Contact', contactSchema);
 
 // MongoDB Connection
 // Using the URI from .env, or a local default if not fully configured yet
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
+const MONGODB_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Connected to MongoDB!'))
-  .catch((err) => {
-      console.error('❌ MongoDB connection failed. Please check your .env file or local MongoDB installation.');
-      console.error('Error details:', err.message);
-  });
+    .then(() => console.log('✅ Connected to MongoDB!'))
+    .catch((err) => {
+        console.error('❌ MongoDB connection failed. Please check your .env file or local MongoDB installation.');
+        console.error('Error details:', err.message);
+    });
 
 // API Route to handle contact form submissions
 app.post('/api/contact', async (req, res) => {
     try {
         const { name, email, message } = req.body;
-        
+
         // Basic validation
         if (!name || !email || !message) {
             return res.status(400).json({ success: false, message: 'All fields are required.' });
@@ -42,7 +42,7 @@ app.post('/api/contact', async (req, res) => {
 
         const newMessage = new Contact({ name, email, message });
         await newMessage.save();
-        
+
         console.log(`New message received from: ${name} (${email})`);
         res.status(200).json({ success: true, message: 'Message sent successfully!' });
     } catch (error) {
